@@ -59,6 +59,50 @@ MainStroke.Thickness = 1.5
 MainStroke.Parent = Main
 
 --========================================================--
+-- GUI ANIMATION ADDITIONS
+--========================================================--
+
+local OriginalMainSize = Main.Size
+local OriginalMainPosition = Main.Position
+
+Main.Size = UDim2.fromOffset(320, 470)
+Main.Position = UDim2.new(
+	OriginalMainPosition.X.Scale,
+	OriginalMainPosition.X.Offset,
+	OriginalMainPosition.Y.Scale,
+	OriginalMainPosition.Y.Offset + 25
+)
+
+Main.BackgroundTransparency = 1
+MainStroke.Transparency = 1
+
+task.spawn(function()
+
+	TweenService:Create(
+		Main,
+		TweenInfo.new(
+			0.55,
+			Enum.EasingStyle.Quint,
+			Enum.EasingDirection.Out
+		),
+		{
+			Size = OriginalMainSize,
+			Position = OriginalMainPosition,
+			BackgroundTransparency = 0
+		}
+	):Play()
+
+	TweenService:Create(
+		MainStroke,
+		TweenInfo.new(0.45),
+		{
+			Transparency = 0
+		}
+	):Play()
+
+end)
+
+--========================================================--
 -- HEADER
 --========================================================--
 
@@ -110,6 +154,87 @@ Status.TextColor3 = Color3.fromRGB(70, 255, 120)
 Status.Font = Enum.Font.GothamBold
 Status.TextSize = 12
 Status.Parent = Header
+
+--========================================================--
+-- HEADER ANIMATIONS
+--========================================================--
+
+Title.TextTransparency = 1
+SubTitle.TextTransparency = 1
+Status.TextTransparency = 1
+
+task.delay(0.15, function()
+
+	TweenService:Create(
+		Title,
+		TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+		{
+			TextTransparency = 0
+		}
+	):Play()
+
+end)
+
+task.delay(0.25, function()
+
+	TweenService:Create(
+		SubTitle,
+		TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+		{
+			TextTransparency = 0
+		}
+	):Play()
+
+end)
+
+task.delay(0.35, function()
+
+	TweenService:Create(
+		Status,
+		TweenInfo.new(0.45, Enum.EasingStyle.Quint, Enum.EasingDirection.Out),
+		{
+			TextTransparency = 0
+		}
+	):Play()
+
+end)
+
+-- Pulsing accent
+task.spawn(function()
+
+	while Accent.Parent do
+
+		TweenService:Create(
+			Accent,
+			TweenInfo.new(
+				0.8,
+				Enum.EasingStyle.Sine,
+				Enum.EasingDirection.InOut
+			),
+			{
+				BackgroundTransparency = 0.35
+			}
+		):Play()
+
+		task.wait(0.8)
+
+		TweenService:Create(
+			Accent,
+			TweenInfo.new(
+				0.8,
+				Enum.EasingStyle.Sine,
+				Enum.EasingDirection.InOut
+			),
+			{
+				BackgroundTransparency = 0
+			}
+		):Play()
+
+		task.wait(0.8)
+
+	end
+
+end)
 
 --========================================================--
 -- SCROLL
@@ -179,14 +304,30 @@ local function Button(text, callback)
 	Stroke.Thickness = 1
 	Stroke.Parent = B
 
+	--====================================================--
+	-- BUTTON ANIMATIONS
+	--====================================================--
+
 	B.MouseEnter:Connect(function()
 
 		TweenService:Create(
 			B,
-			TweenInfo.new(0.12),
+			TweenInfo.new(
+				0.15,
+				Enum.EasingStyle.Quint,
+				Enum.EasingDirection.Out
+			),
 			{
-				BackgroundColor3 =
-					Color3.fromRGB(43, 43, 54)
+				BackgroundColor3 = Color3.fromRGB(43, 43, 54),
+				Size = UDim2.new(1, -6, 0, 44)
+			}
+		):Play()
+
+		TweenService:Create(
+			Stroke,
+			TweenInfo.new(0.15),
+			{
+				Color = Settings.Color
 			}
 		):Play()
 
@@ -196,10 +337,54 @@ local function Button(text, callback)
 
 		TweenService:Create(
 			B,
-			TweenInfo.new(0.12),
+			TweenInfo.new(
+				0.15,
+				Enum.EasingStyle.Quint,
+				Enum.EasingDirection.Out
+			),
 			{
-				BackgroundColor3 =
-					Color3.fromRGB(29, 29, 38)
+				BackgroundColor3 = Color3.fromRGB(29, 29, 38),
+				Size = UDim2.new(1, -12, 0, 42)
+			}
+		):Play()
+
+		TweenService:Create(
+			Stroke,
+			TweenInfo.new(0.15),
+			{
+				Color = Color3.fromRGB(47, 47, 57)
+			}
+		):Play()
+
+	end)
+
+	B.MouseButton1Down:Connect(function()
+
+		TweenService:Create(
+			B,
+			TweenInfo.new(
+				0.08,
+				Enum.EasingStyle.Quad,
+				Enum.EasingDirection.Out
+			),
+			{
+				Size = UDim2.new(1, -20, 0, 38)
+			}
+		):Play()
+
+	end)
+
+	B.MouseButton1Up:Connect(function()
+
+		TweenService:Create(
+			B,
+			TweenInfo.new(
+				0.12,
+				Enum.EasingStyle.Back,
+				Enum.EasingDirection.Out
+			),
+			{
+				Size = UDim2.new(1, -6, 0, 44)
 			}
 		):Play()
 
@@ -457,6 +642,50 @@ local function CreateESP(player)
 	Data.Highlight = Highlight
 
 	--------------------------------------------------
+	-- HIGHLIGHT ANIMATION
+	--------------------------------------------------
+
+	task.spawn(function()
+
+		while Highlight.Parent and ESPObjects[player] do
+
+			TweenService:Create(
+				Highlight,
+				TweenInfo.new(
+					0.9,
+					Enum.EasingStyle.Sine,
+					Enum.EasingDirection.InOut
+				),
+				{
+					FillTransparency = 0.78
+				}
+			):Play()
+
+			task.wait(0.9)
+
+			if not Highlight.Parent then
+				break
+			end
+
+			TweenService:Create(
+				Highlight,
+				TweenInfo.new(
+					0.9,
+					Enum.EasingStyle.Sine,
+					Enum.EasingDirection.InOut
+				),
+				{
+					FillTransparency = 0.58
+				}
+			):Play()
+
+			task.wait(0.9)
+
+		end
+
+	end)
+
+	--------------------------------------------------
 	-- BILLBOARD
 	--------------------------------------------------
 
@@ -478,6 +707,28 @@ local function CreateESP(player)
 	Billboard.Parent = Character
 
 	Data.Billboard = Billboard
+
+	--------------------------------------------------
+	-- BILLBOARD ANIMATION
+	--------------------------------------------------
+
+	Billboard.StudsOffset = Vector3.new(0, 2.7, 0)
+
+	task.spawn(function()
+
+		TweenService:Create(
+			Billboard,
+			TweenInfo.new(
+				0.45,
+				Enum.EasingStyle.Back,
+				Enum.EasingDirection.Out
+			),
+			{
+				StudsOffset = Vector3.new(0, 3.2, 0)
+			}
+		):Play()
+
+	end)
 
 	--------------------------------------------------
 	-- NAME
@@ -504,6 +755,8 @@ local function CreateESP(player)
 		Enum.Font.GothamBold
 
 	Name.TextSize = 15
+
+	Name.TextTransparency = 1
 
 	Name.Parent = Billboard
 
@@ -533,6 +786,8 @@ local function CreateESP(player)
 
 	Distance.TextSize = 13
 
+	Distance.TextTransparency = 1
+
 	Distance.Parent = Billboard
 
 	Data.Distance = Distance
@@ -561,9 +816,46 @@ local function CreateESP(player)
 
 	Health.TextSize = 13
 
+	Health.TextTransparency = 1
+
 	Health.Parent = Billboard
 
 	Data.Health = Health
+
+	-- Fade billboard information in
+	task.spawn(function()
+
+		task.wait(0.05)
+
+		TweenService:Create(
+			Name,
+			TweenInfo.new(0.35),
+			{
+				TextTransparency = 0
+			}
+		):Play()
+
+		task.wait(0.05)
+
+		TweenService:Create(
+			Distance,
+			TweenInfo.new(0.35),
+			{
+				TextTransparency = 0
+			}
+		):Play()
+
+		task.wait(0.05)
+
+		TweenService:Create(
+			Health,
+			TweenInfo.new(0.35),
+			{
+				TextTransparency = 0
+			}
+		):Play()
+
+	end)
 
 	--------------------------------------------------
 	-- TRACER
@@ -983,6 +1275,46 @@ RunService.RenderStepped:Connect(function()
 
 end)
 
+--========================================================--
+-- STATUS PULSE ANIMATION
+--========================================================--
+
+task.spawn(function()
+
+	while Status.Parent do
+
+		TweenService:Create(
+			Status,
+			TweenInfo.new(
+				0.7,
+				Enum.EasingStyle.Sine,
+				Enum.EasingDirection.InOut
+			),
+			{
+				TextTransparency = 0.25
+			}
+		):Play()
+
+		task.wait(0.7)
+
+		TweenService:Create(
+			Status,
+			TweenInfo.new(
+				0.7,
+				Enum.EasingStyle.Sine,
+				Enum.EasingDirection.InOut
+			),
+			{
+				TextTransparency = 0
+			}
+		):Play()
+
+		task.wait(0.7)
+
+	end
+
+end)
+
 --------------------------------------------------
 -- RIGHT SHIFT TOGGLE
 --------------------------------------------------
@@ -994,6 +1326,53 @@ UIS.InputBegan:Connect(function(input)
 
 		Main.Visible =
 			not Main.Visible
+
+		--================================================--
+		-- GUI OPEN/CLOSE ANIMATION
+		--================================================--
+
+		if Main.Visible then
+
+			Main.Size = UDim2.fromOffset(320, 470)
+			Main.BackgroundTransparency = 0.15
+
+			TweenService:Create(
+				Main,
+				TweenInfo.new(
+					0.35,
+					Enum.EasingStyle.Back,
+					Enum.EasingDirection.Out
+				),
+				{
+					Size = OriginalMainSize,
+					BackgroundTransparency = 0
+				}
+			):Play()
+
+			TweenService:Create(
+				MainStroke,
+				TweenInfo.new(0.3),
+				{
+					Transparency = 0
+				}
+			):Play()
+
+		else
+
+			TweenService:Create(
+				Main,
+				TweenInfo.new(
+					0.2,
+					Enum.EasingStyle.Quad,
+					Enum.EasingDirection.In
+				),
+				{
+					Size = UDim2.fromOffset(320, 470),
+					BackgroundTransparency = 1
+				}
+			):Play()
+
+		end
 
 	end
 
